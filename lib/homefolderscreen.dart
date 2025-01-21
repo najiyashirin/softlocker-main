@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'storage_info.dart';
 import 'navigation_bar.dart';
 import 'empty_state.dart';
-import 'file_details_widget.dart';
-import 'file_list_screen.dart'; // Import FileListScreen
+import 'folder_details_widget.dart';
+import 'file_list_screen.dart';
+import 'profile_screen.dart'; // Import ProfileScreen
 
 class HomeFolderScreen extends StatelessWidget {
-  const HomeFolderScreen({Key? key}) : super(key: key);
+  const HomeFolderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class HomeFolderScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(17, 14, 17, 0),
           child: Column(
             children: [
-              // Header Section with Logos
+              // Header Section with Logos and User Icon
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -32,10 +33,21 @@ class HomeFolderScreen extends StatelessWidget {
                     width: 40,
                     height: 33,
                   ),
-                  Image.asset(
-                    'assets/logo2.png',
-                    width: 42,
-                    height: 42,
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to ProfileScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: const Icon(
+                      Icons.account_circle,
+                      size: 42,
+                      color: Color(0xFF0071A5),
+                    ),
                   ),
                 ],
               ),
@@ -63,21 +75,20 @@ class HomeFolderScreen extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => FileListScreen(
-                                    folderName:
-                                        folder['name'], // Pass folder name
+                                    folderName: folder['name'],
                                   ),
                                 ),
                               );
                             },
                             onLongPress: () {
-                              // Show file details on long press
+                              // Show folder details on long press
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (_) => FractionallySizedBox(
                                   heightFactor: 0.4,
-                                  child: FileDetailsScreen(
+                                  child: FolderDetailsScreen(
                                     folderName: folder['name'],
                                     itemCount: folder['items'],
                                     folderSize: folder['size'],
@@ -87,9 +98,9 @@ class HomeFolderScreen extends StatelessWidget {
                             },
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.folder,
-                                  color: Colors.blue,
+                                  color: Color(0xFF0071A5),
                                   size: 50,
                                 ),
                                 const SizedBox(height: 8),
@@ -123,15 +134,9 @@ class HomeFolderScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-
-              // Storage Widget
               const StorageWidget(),
-
               const SizedBox(height: 39),
-
-              // Custom Navigation Bar
               const CustomNavigationBar(),
-
               const SizedBox(height: 10),
             ],
           ),

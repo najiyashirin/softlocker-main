@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // For Gallery and Camera
-import 'package:file_picker/file_picker.dart'; // For File Picker
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'homefolderscreen.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final bool isHomeSelected;
 
-  const CustomNavigationBar({Key? key, this.isHomeSelected = true})
-      : super(key: key);
+  const CustomNavigationBar({super.key, this.isHomeSelected = true});
 
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
@@ -27,7 +26,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       isHomeSelected = true;
     });
 
-    // Navigate to HomeFolderScreen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomeFolderScreen()),
@@ -42,7 +40,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     // Show the popup when Add button is pressed
     showDialog(
       context: context,
-      builder: (context) => Center(
+      builder: (context) => const Center(
         child: _AddPopup(),
       ),
     );
@@ -75,7 +73,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 child: Icon(
                   Icons.home,
                   color: const Color(0xFF0071A5),
-                  size: isHomeSelected ? 36 : 30, // Larger when selected
+                  size: isHomeSelected ? 36 : 30,
                 ),
               ),
 
@@ -83,7 +81,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               GestureDetector(
                 onTap: () => _onAddIconPressed(context),
                 child: Container(
-                  width: isHomeSelected ? 30 : 36, // Larger when selected
+                  width: isHomeSelected ? 30 : 36,
                   height: isHomeSelected ? 30 : 36,
                   decoration: BoxDecoration(
                     color: const Color(0xFF0071A5),
@@ -108,14 +106,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 }
 
 class _AddPopup extends StatelessWidget {
-  const _AddPopup({Key? key}) : super(key: key);
+  const _AddPopup({super.key});
 
   void _selectFromGallery(BuildContext context) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       Navigator.pop(context); // Close the popup
-      // Handle the selected image (e.g., upload or display)
       debugPrint('Selected from gallery: ${image.path}');
     }
   }
@@ -125,7 +122,6 @@ class _AddPopup extends StatelessWidget {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       Navigator.pop(context); // Close the popup
-      // Handle the captured image
       debugPrint('Captured with camera: ${image.path}');
     }
   }
@@ -135,62 +131,61 @@ class _AddPopup extends StatelessWidget {
         await FilePicker.platform.pickFiles(type: FileType.any);
     if (result != null) {
       Navigator.pop(context); // Close the popup
-      // Handle the selected file
       debugPrint('Selected file: ${result.files.single.path}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 271,
-      height: 74,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(140),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            blurRadius: 4,
-            offset: const Offset(0, 4),
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          width: 271,
+          height: 74,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(140),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 4,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Gallery Icon
-          GestureDetector(
-            onTap: () => _selectFromGallery(context),
-            child: const Icon(
-              Icons.photo,
-              size: 36,
-              color: Colors.blue,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () => _selectFromGallery(context),
+                child: Image.asset(
+                  'assets/gallery.png',
+                  width: 36,
+                  height: 36,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _openCamera(context),
+                child: Image.asset(
+                  'assets/camera.png',
+                  width: 36,
+                  height: 36,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _selectFile(context),
+                child: Image.asset(
+                  'assets/file_upload.png',
+                  width: 36,
+                  height: 36,
+                ),
+              ),
+            ],
           ),
-
-          // Camera Icon
-          GestureDetector(
-            onTap: () => _openCamera(context),
-            child: const Icon(
-              Icons.camera_alt,
-              size: 36,
-              color: Colors.blue,
-            ),
-          ),
-
-          // Add File Icon
-          GestureDetector(
-            onTap: () => _selectFile(context),
-            child: const Icon(
-              Icons.file_upload,
-              size: 36,
-              color: Colors.blue,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
